@@ -1,0 +1,29 @@
+{
+  "name": "inputid",
+  "version": "0.1.0",
+  "description": "A value object representing an HTML form control ID, making sure the ID generation is deterministic and unique in a document.",
+  "main": "src/InputId.js",
+  "scripts": {
+    "test": "jest tests/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedroac/js-inputid.git"
+  },
+  "keywords": [
+    "id",
+    "generate",
+    "form",
+    "input"
+  ],
+  "author": "Pedro Amaral Couto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pedroac/js-inputid/issues"
+  },
+  "homepage": "https://github.com/pedroac/js-inputid#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.13.8",
+    "jest": "^26.6.3"
+  }
+}
