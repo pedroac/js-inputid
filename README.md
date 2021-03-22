@@ -1,9 +1,11 @@
 # InputId
 
 
-[![npm version](https://img.shields.io/npm/v/axios.svg?style=flat-square)](https://www.npmjs.org/package/axios)
+[![npm version](https://img.shields.io/npm/v/inputid.svg?style=flat-square)](https://www.npmjs.org/package/inputid)
 [![Build Status](https://travis-ci.com/pedroac/js-inputid.svg?branch=master)](https://travis-ci.com/pedroac/js-inputid)
+[![codecov](https://codecov.io/gh/pedroac/js-inputid/branch/master/graph/badge.svg?token=430RWSEDD2)](https://codecov.io/gh/pedroac/js-inputid)
 [![Open Source Helpers](https://www.codetriage.com/pedroac/js-inputid/badges/users.svg)](https://www.codetriage.com/pedroac/js-inputid)
+[![Buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/pedroac)
 
 A Javascript value object representing an HTML [form control](https://stackoverflow.com/questions/31739685/what-is-a-form-control-in-html) ID, making sure the ID generation is deterministic and unique in a document.
 

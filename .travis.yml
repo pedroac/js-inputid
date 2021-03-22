@@ -1,7 +1,16 @@
-language:
-  node_js
+language: node_js
+node_js:
+- 10.19.0
 before_install:
-  - npm install -g codecov
+- npm install -g codecov
 script:
-  - npm test
-  - codecov
+- npm test
+- codecov
+deploy:
+  provider: npm
+  email: pedro.amaral.couto@gmail.com
+  api_key:
+    secure: Hf49oujKPSQ1hT53S6InLY3QhO6AYZIGM1tPICn+tVZpwe1kqKY5pE6UsD2sdATWEoaHc3yEgum6/bUw/gK5pTMoyaZvbn3pkaYRBSjHJIyCmcMF5cF1w191JLxCZ0QeD0DS0oPy3e2ZxBVD4Wbe0SRA0dmlK7EXOCuqnC7pAT+RytTZJBARFww6osE/uolm0uJ71LVMhOtYqRWLkfRhzIAzcILrhqCvI9N7PThyEfJDBoYZODs5JkciWBZlozCBKnM0jGASxjuN1MQ25nrRy42f1A5X5DuWMzxaNTndp6Mozb+HfiIJPn/Ta9JHhXMnk6mPeC1xj8gOt02WkE713kOYAr5G2S9tkArpG5nqkxFmAlVLNQZqWuuxKwByixa36SDNpvVA8yf+y8JKk7FEPeuGeSks9zkFswN0c7hPyIdGZnjWGG068xk1AccYoN8PRJQ6KOtlUiZIrkM5y2eqBMOFMqHcsy9+4eTzi+6bKorUesy9gNm+4mkyPtEU44KWqNNcpGXtw/h/qm+sJS+gulM7KcYK/i5klRLgxmxu8RDm48kgB3mZCK2y3PIPmo1cEwUJj9GHqO318NSq7WI5tPS2puQYt1dWcqp3sJ/Pn4qP2ACZ7cUNc5lftvnhxgnmq7ClFCdFcPJOI0qlrVgGxkN9+yDi4CYhuer12+sh1UI=
+  on:
+    tags: false
+    repo: pedroac/js-inputid
