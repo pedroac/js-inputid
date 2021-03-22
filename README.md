@@ -57,7 +57,7 @@ It might seem a good idea to generate IDs randomly or sequentially, but there's 
 Using npm:
 
 ```bash
-npm install @pedroac/inputid
+npm install inputid
 ```
 
 ## :feet: Usage
