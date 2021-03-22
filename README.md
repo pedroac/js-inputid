@@ -1,5 +1,10 @@
 # InputId
 
+
+[![npm version](https://img.shields.io/npm/v/axios.svg?style=flat-square)](https://www.npmjs.org/package/axios)
+[![Build Status](https://travis-ci.com/pedroac/js-inputid.svg?branch=master)](https://travis-ci.com/pedroac/js-inputid)
+[![Open Source Helpers](https://www.codetriage.com/pedroac/js-inputid/badges/users.svg)](https://www.codetriage.com/pedroac/js-inputid)
+
 A Javascript value object representing an HTML [form control](https://stackoverflow.com/questions/31739685/what-is-a-form-control-in-html) ID, making sure the ID generation is deterministic and unique in a document.
 
 ## :triangular_flag_on_post: Table of contents
