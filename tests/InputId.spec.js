@@ -1,4 +1,4 @@
-import InputId from "../src/InputId";
+const InputId = require('inputid');
 
 describe('inputId', () => {
     beforeEach(() => {

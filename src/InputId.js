@@ -3,7 +3,7 @@
 /**
  * A value object representing an HTML form control ID.
  */
-export default class InputId {
+ module.exports = class InputId {
     /**
      * Make a new instance of InputId with a HTMLElement or options.
      * 

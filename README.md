@@ -66,7 +66,7 @@ An `InputId` instantiation is a [value object](https://www.martinfowler.com/blik
 
 It doesn't require any arguments or configuration:
 ```js
-const InputId = require('InputId');
+const InputId = require('inputid');
 
 labelElement.for = inputElement.id = new InputId();
 ```
