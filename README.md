@@ -1,9 +1,9 @@
 # InputId
 
-
 [![npm version](https://img.shields.io/npm/v/inputid.svg?style=flat-square)](https://www.npmjs.org/package/inputid)
 [![Build Status](https://travis-ci.com/pedroac/js-inputid.svg?branch=master)](https://travis-ci.com/pedroac/js-inputid)
 [![codecov](https://codecov.io/gh/pedroac/js-inputid/branch/master/graph/badge.svg?token=430RWSEDD2)](https://codecov.io/gh/pedroac/js-inputid)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/32c1703f4f2a4aa0bf378e01a0a02011)](https://www.codacy.com/gh/pedroac/js-inputid/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pedroac/js-inputid&amp;utm_campaign=Badge_Grade)
 [![Open Source Helpers](https://www.codetriage.com/pedroac/js-inputid/badges/users.svg)](https://www.codetriage.com/pedroac/js-inputid)
 [![Buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/pedroac)
 
