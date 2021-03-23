@@ -11,10 +11,10 @@ A Javascript value object representing an HTML [form control](https://stackoverf
 
 ## :triangular_flag_on_post: Table of contents
 
-* [Why](#why)
-* [Features](#features)
-* [Installation](#installation)
-* [Usage](#usage)
+* [Why](#thinking-why)
+* [Features](#art-features)
+* [Installation](#rocket-installation)
+* [Usage](#feet-usage)
     * [Generating an ID from a HTML element](#generating-an-id-from-a-html-element)
     * [Generating IDs for several elements](#generating-ids-for-several-elements)
     * [Generating an ID without an element](#generating-an-id-without-an-element)
@@ -23,8 +23,8 @@ A Javascript value object representing an HTML [form control](https://stackoverf
     * [Making sure the ID is unique](#making-sure-the-id-is-unique)
     * [Generating more IDs from an ID](#generating-more-ids-from-an-id)
     * [Dealing with problematic characters](#dealing-with-problematic-characters)
-* [Contributing](#contributing)
-* [License](#license)
+* [Contributing](#wrench-contributing)
+* [License](#scroll-license)
 
 ## :thinking: Why?
 
