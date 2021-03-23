@@ -3,9 +3,12 @@ node_js:
 - 10.19.0
 before_install:
 - npm install -g codecov
+- npm install -g jsinspect
 script:
 - npm test
 - codecov
+- jsinspect ./src
+- npm run lint
 deploy:
   provider: npm
   email: pedro.amaral.couto@gmail.com

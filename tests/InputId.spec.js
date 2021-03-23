@@ -304,7 +304,7 @@ describe('inputId', () => {
         expect(() => {
             new InputId({
                 element: document.createTextNode('txt')
-            })
+            });
         }).toThrow();
         expect(() => {
             new InputId(document.createTextNode('txt'));

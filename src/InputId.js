@@ -1,9 +1,7 @@
-'use strict';
-
 /**
  * A value object representing an HTML form control ID.
  */
- module.exports = class InputId {
+module.exports = class InputId {
     /**
      * Make a new instance of InputId with a HTMLElement or options.
      * 
@@ -35,7 +33,7 @@
             );
         }
         // set the ID parts separator and a base ID fallback
-        this._separator = options.separator === undefined ? '_' : options.separator;
+        this._separator = ('separator' in options) ? options.separator : '_';
         this._fallback = options.fallback === undefined
             ? 'f'
             : options.fallback;
@@ -71,20 +69,23 @@
             this._forceUniqueness = !!options.forceUniqueness;
         }
         // validate fields
-        if (!this._fallback.match(/^[a-zA-Z][a-zA-Z0-9_\-]*$/g)) {
-            throw new TypeError('The "fallback" option value is invalid');
-        }
-        if (!['_', '-', ''].includes(this._separator)) {
-            throw new RangeError('The "separator" option value must be a "", or "_", or "-"');
-        }
-        if (this._element && !(this._element instanceof HTMLElement)) {
-            throw new TypeError('The "element" option value must be HTMLElement');
-        }
-        if (!(this._ownerDocument instanceof HTMLDocument)) {
-            throw new TypeError('The "ownerDocument" option value must be HTMLDocument');
-        }
-        this._string = null;
-        Object.seal(this);
+        (() => {
+            if (!this._fallback.match(/^[a-zA-Z][a-zA-Z0-9_-]*$/g)) {
+                throw new TypeError('The "fallback" option value is invalid');
+            }
+            if (!['_', '-', ''].includes(this._separator)) {
+                throw new RangeError('The "separator" option value must be a "", or "_", or "-"');
+            }
+            if (this._element && !(this._element instanceof HTMLElement)) {
+                throw new TypeError('The "element" option value must be HTMLElement');
+            }
+            if (!(this._ownerDocument instanceof HTMLDocument)) {
+                throw new TypeError('The "ownerDocument" option value must be HTMLDocument');
+            }
+            this._string = null;
+            Object.seal(this);
+        })();
+        
     }
 
     /**
@@ -156,7 +157,7 @@
      */
     withType(type) {
         return new InputId(
-            { ...this.toObject(), ...{ type: type } }
+            {...this.toObject(), ...{ type: type } }
         );
     }
 
@@ -167,7 +168,7 @@
      */
     withName(name) {
         return new InputId(
-            { ...this.toObject(), ...{ name: name } }
+            {...this.toObject(), ...{ name: name } }
         );
     }
 
@@ -178,7 +179,7 @@
      */
     withValue(value) {
         return new InputId(
-            { ...this.toObject(), ...{ value: value } }
+            {...this.toObject(), ...{ value: value } }
         );
     }
 
@@ -188,7 +189,7 @@
      */
     forceUniqueness() {
         return new InputId(
-            { ...this.toObject(), ...{ forceUniqueness: true } }
+            {...this.toObject(), ...{ forceUniqueness: true } }
         );
     }
 
@@ -198,7 +199,7 @@
      */
     ignoreUniqueness() {
         return new InputId(
-            { ...this.toObject(), ...{ forceUniqueness: false } }
+            {...this.toObject(), ...{ forceUniqueness: false } }
         );
     }
 
@@ -218,7 +219,7 @@
         const element = this.getElement();
         return element ? Array.from(element.labels) : [];
     }
-}
+};
 
 /**
  * Sanitize suggested element id value, enforcing a valid HTML id value.
@@ -240,14 +241,14 @@ function clean(uncleanedId, doctype, fallback, separator) {
         && !doctype.publicId
         && !doctype.systemId;
     const invalidCharactersRegex = isHtml5
-        ? /[^0-9\p{L}\p{M}_\-]/ug
-        : /[^0-9a-zA-Z_\-]/g;
+        ? /[^0-9\p{L}\p{M}_-]/ug
+        : /[^0-9a-zA-Z_-]/g;
     const cleanedHtmlId = uncleanedId
         .normalize('NFKD')
         .replace(/[\u0300-\u036f]/g, '')
         .replace(invalidCharactersRegex, () => '-')
         .replace(/-(-+)/, '-')
-        .replace(/^\-+|\-+$|^_|_$/, '')
+        .replace(/^-+|-+$|^_|_$/, '')
         .toLowerCase();
     if (cleanedHtmlId.length === 0) {
         return fallback;
@@ -275,13 +276,12 @@ function generateUniqueFromBaseId(baseId, node, fallback, separator) {
     const ownerDocument = node.ownerDocument || node;
     const cleanedBaseId = clean(baseId, ownerDocument.doctype, fallback, separator);
     let idAttempt = cleanedBaseId;
-    let attemptNumber = 0;
-    while (true) {
+    for (let attemptNumber = 1;;++attemptNumber) {
         const elementWithId = ownerDocument.getElementById(idAttempt);
         if (!elementWithId || elementWithId === node) {
             break;
         }
-        idAttempt = `${cleanedBaseId}${separator}${++attemptNumber}`;
+        idAttempt = `${cleanedBaseId}${separator}${attemptNumber}`;
     }
     return idAttempt;
 }
@@ -293,8 +293,7 @@ function generateUniqueFromBaseId(baseId, node, fallback, separator) {
  * @returns {HTMLSelectElement|null} The "select" element or null.
  */
 function getOptionSelectElement(optionElement) {
-    let ancestor = null;
-    while (ancestor = optionElement.parentNode) {
+    for (let ancestor = optionElement.parentNode; ancestor; ancestor = optionElement.parentNode) {
         if (ancestor.tagName.toLowerCase() === 'select') {
             return ancestor;
         }
