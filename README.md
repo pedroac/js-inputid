@@ -75,7 +75,7 @@ It doesn't require any arguments or configuration:
 ```js
 const InputId = require('inputid');
 
-labelElement.for = inputElement.id = new InputId();
+labelElement.htmlFor = inputElement.id = new InputId();
 ```
 
 But you'd get better results if an HTML element or options are provided as an argument.
