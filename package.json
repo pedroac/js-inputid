@@ -1,6 +1,6 @@
 {
   "name": "inputid",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A value object representing an HTML form control ID, making sure the ID generation is deterministic and unique in a document.",
   "main": "src/InputId.js",
   "scripts": {
