@@ -1,3 +1,6 @@
+const InputIdOptions = require('./InputIdOptions');
+const {clean, generateUniqueFromBaseId} = require('./functions');
+
 /**
  * A value object representing an HTML form control ID.
  */
@@ -16,76 +19,18 @@ module.exports = class InputId {
      * @param {String|undefined} options.fallback Generated ID fallback (ex: when sanitization fails).
      */
     constructor(options = {}) {
-        // set HTML element
-        if (!(options instanceof Object)) {
-            this._element = options;
-        } else if (options.element) {
-            this._element = options.element;
-            options = Object.assign(
-                {
-                    name: this._element.name,
-                    value: this._element.value,
-                    type: this._element.type,
-                    tagName: this._element.tagName,
-                    ownerDocument: this._element.ownerDocument
-                },
-                options
-            );
-        }
-        // set the ID parts separator and a base ID fallback
-        this._separator = ('separator' in options) ? options.separator : '_';
-        this._fallback = options.fallback === undefined
-            ? 'f'
-            : options.fallback;
-        // set the HTML element attributes
-        this._ownerDocument = options.ownerDocument || global.document;
-        if (options.name !== undefined) {
-            this._name = options.name;
-        }
-        if (options.value !== undefined) {
-            this._value = options.value;
-        }
-        if (options.prefix) {
-            this._prefix = options.prefix;
-        } else if (options.form && options.form.id) {
-            this._prefix = options.form.id;
-        }
-        if (options.type) {
-            this._type = options.type;
-        } else if (options.tagName) {
-            this._type = options.tagName.toLowerCase();
-        }
-        if (!this._name) {
-            if (this._element && this._element.dataset && this._element.dataset.name) {
-                this._name = this._element.dataset.name;
-            } else if (!this._name && this._type === 'option') {
-                const selectElement = getOptionSelectElement(options);
-                this._name = selectElement ? selectElement.name : null;
-            }
-        }
-        // check if ID uniqueness should be enforced
-        this._forceUniqueness = !!this._element || !this._name;
-        if (options.forceUniqueness !== undefined) {
-            this._forceUniqueness = !!options.forceUniqueness;
-        }
-        // validate fields
-        (() => {
-            if (!this._fallback.match(/^[a-zA-Z][a-zA-Z0-9_-]*$/g)) {
-                throw new TypeError('The "fallback" option value is invalid');
-            }
-            if (!['_', '-', ''].includes(this._separator)) {
-                throw new RangeError('The "separator" option value must be a "", or "_", or "-"');
-            }
-            if (this._element && !(this._element instanceof HTMLElement)) {
-                throw new TypeError('The "element" option value must be HTMLElement');
-            }
-            if (!(this._ownerDocument instanceof HTMLDocument)) {
-                throw new TypeError('The "ownerDocument" option value must be HTMLDocument');
-            }
-            this._string = null;
-            Object.seal(this);
-        })();
-        
+        const resolvedOptions = new InputIdOptions(options);
+        this._element = resolvedOptions.element;
+        this._fallback = resolvedOptions.fallback;
+        this._forceUniqueness = resolvedOptions.forceUniqueness;
+        this._name = resolvedOptions.name;
+        this._value = resolvedOptions.value;
+        this._ownerDocument = resolvedOptions.ownerDocument;
+        this._prefix = resolvedOptions.prefix;
+        this._separator = resolvedOptions.separator;
+        this._type = resolvedOptions.type;
+        this._string = null;
+        Object.seal(this);
     }
 
     /**
@@ -101,21 +46,7 @@ module.exports = class InputId {
      */
     toString() {
         if (this._string === null) {
-            const parts = [];
-            if (this._prefix !== undefined) {
-                parts.push(this._prefix);
-            }
-            if (this._name) {
-                parts.push(this._name);
-            }
-            if (
-                this._type
-                && this._value !== undefined
-                && ['checkbox', 'radio', 'option'].includes(this._type)
-            ) {
-                parts.push(this._value);
-            }
-            let id = parts.join(this._separator);
+            let id = this.toArray().join(this._separator);
             this._string = this._forceUniqueness
                 ? generateUniqueFromBaseId(
                     id,
@@ -148,6 +79,28 @@ module.exports = class InputId {
             ownerDocument: this._ownerDocument,
             forceUniqueness: this._forceUniqueness
         };
+    }
+
+    /**
+     * @returns {Array} The components used to build the ID string
+     *  before sanitizing and checking if it's unique in the document.
+     */
+    toArray() {
+        const parts = [];
+        if (this._prefix !== null) {
+            parts.push(this._prefix);
+        }
+        if (this._name) {
+            parts.push(this._name);
+        }
+        if (
+            this._type
+            && this._value !== null
+            && ['checkbox', 'radio', 'option'].includes(this._type)
+        ) {
+            parts.push(this._value);
+        }
+        return parts;
     }
 
     /**
@@ -220,83 +173,3 @@ module.exports = class InputId {
         return element ? Array.from(element.labels) : [];
     }
 };
-
-/**
- * Sanitize suggested element id value, enforcing a valid HTML id value.
- * Invalid characters are removed or replaced by a "-".
- * If the sanitization fails, then a fallback is used:
- * it might be used to replace the entire unsanitized ID or added as a prefix.
- * @see {@link https://www.w3.org/TR/html4/types.html#type-id}
- * @see {@link https://html.spec.whatwg.org/multipage/dom.html#the-id-attribute}
- * @see {@link https://stackoverflow.com/a/79022/4067232}
- * 
- * @param {String} uncleanedId The ID before the sanitization.
- * @param {DocumentType} doctype The document type.
- * @param {String} fallback A fallback for the base ID. 
- * @param {String} separator A separator used for a prefix.
- * @returns {String} The sanitized up id value.
- */
-function clean(uncleanedId, doctype, fallback, separator) {
-    const isHtml5 = doctype.name === 'html'
-        && !doctype.publicId
-        && !doctype.systemId;
-    const invalidCharactersRegex = isHtml5
-        ? /[^0-9\p{L}\p{M}_-]/ug
-        : /[^0-9a-zA-Z_-]/g;
-    const cleanedHtmlId = uncleanedId
-        .normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(invalidCharactersRegex, () => '-')
-        .replace(/-(-+)/, '-')
-        .replace(/^-+|-+$|^_|_$/, '')
-        .toLowerCase();
-    if (cleanedHtmlId.length === 0) {
-        return fallback;
-    }
-    return (!isHtml5 && cleanedHtmlId[0].match(/[^a-zA-Z]/))
-        ? `${fallback}${separator}${cleanedHtmlId}`
-        : cleanedHtmlId;
-}
-
-/**
- * Generate a unique ID in a document with a base ID.
- * If the ID already exists in the document and the element with that ID is not
- * the one that should have it, a suffix is appended.
- * That suffix is a separator (ex: '_') and a positive integer.
- * The base ID is sanitized. A fallback base ID might be used when the sanitization
- * was not possible.
- * 
- * @param {String} baseId The base ID.
- * @param {Node} node A document or a element which should have the ID.
- * @param {String} fallback A fallback for the base ID. 
- * @param {String} separator A separator used for a suffix.
- * @returns {String} The generated ID.
- */
-function generateUniqueFromBaseId(baseId, node, fallback, separator) {
-    const ownerDocument = node.ownerDocument || node;
-    const cleanedBaseId = clean(baseId, ownerDocument.doctype, fallback, separator);
-    let idAttempt = cleanedBaseId;
-    for (let attemptNumber = 1;;++attemptNumber) {
-        const elementWithId = ownerDocument.getElementById(idAttempt);
-        if (!elementWithId || elementWithId === node) {
-            break;
-        }
-        idAttempt = `${cleanedBaseId}${separator}${attemptNumber}`;
-    }
-    return idAttempt;
-}
-
-/**
- * Get the "select" element associated with a specified "option" element.
- * 
- * @param {HTMLOptionElement} optionElement The specified "option" element.
- * @returns {HTMLSelectElement|null} The "select" element or null.
- */
-function getOptionSelectElement(optionElement) {
-    for (let ancestor = optionElement.parentNode; ancestor; ancestor = optionElement.parentNode) {
-        if (ancestor.tagName.toLowerCase() === 'select') {
-            return ancestor;
-        }
-    }
-    return null;
-}
